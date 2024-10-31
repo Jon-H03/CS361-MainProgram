@@ -9,10 +9,17 @@ class MainProgram:
         print("Welcome to Haiku Bot!")
         print("What would you like to do?")
 
+    # IH3: User has freedom to read documentation if they need it, and jump straight to the app's main function if not.
+    # IH4: The structure of the main menu will not be changed so that current users will never have to look hard for the
+    # features relevant to them, even with updates.
+    # IH6: The documentation provides an explicit path through through the task in its current state. When the user-
+    # generated option is added, there will be an explicit path provided for that as well.
+    # IH8: Users are free to select any option in its current state without breaking the app. When more functionality is
+    # added, users should expect the same level of freedom without worrying about breaking the app.
     def get_answer(self):
         print("1. Generate new haiku")
         print("2. View past haikus")
-        print("3. Documentation & Usage")
+        print("3. Documentation & Usage") # IH1, IH2,
         print("4. Exit")
         answer = input("Please enter the corresponding number.\n")
 
@@ -24,8 +31,11 @@ class MainProgram:
         time.sleep(1)
         while True:
             if answer == "1":
+                # IH5: Make the option to back out of the haiku menu, if a user needs to return to the main menu.
+                # IH7: User has the option to generate a random haiku or input a topic for the haiku to be based on.
                 input_or_rand = input("1. Input Haiku Topic\n"
-                                      "2. Generate Random Haiku\n")
+                                      "2. Generate Random Haiku\n"
+                                      "3. Go back to main menu\n")
                 self.haiku(input_or_rand)
                 break
             elif answer == "2":

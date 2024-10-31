@@ -12,6 +12,7 @@ USAGE
 1. Generate new haiku
    - Choose to input a topic or get a random haiku
    - Random haikus are selected from pre-written collection in its current state (more to come in the future...)
+   * Using random haiku is currently faster since it's haikus are pre-generated, however using the first option allows more freedom to have it generate a topic related to the user input.
 
 2. View past haikus
    - Shows previously generated haikus (feature coming soon)
