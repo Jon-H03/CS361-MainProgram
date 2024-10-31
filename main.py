@@ -1,6 +1,7 @@
 import time
 import random
 
+documentation = ""
 
 class MainProgram:
 
@@ -11,7 +12,8 @@ class MainProgram:
     def get_answer(self):
         print("1. Generate new haiku")
         print("2. View past haikus")
-        print("3. Exit")
+        print("3. Documentation & Usage")
+        print("4. Exit")
         answer = input("Please enter the corresponding number.\n")
 
         return answer
@@ -30,6 +32,10 @@ class MainProgram:
                 # Show past haikus
                 pass
             elif answer == "3":
+                # Show documentation (IH #...)
+                self.print_documentation()
+                return 0
+            elif answer == "4":
                 # Exit haiku bot
                 print("Thank you for using Haiku Bot! Session will now be closed.\n")
                 return 1
@@ -48,16 +54,20 @@ class MainProgram:
         random_haikus = {
             1: "Just because where you\n"
                "Are doesn't seem right, doesn't\n"
-               "Mean that it is wrong",
+               "Mean that it is wrong\n",
             2: "Cool, calm refreshing\n"
                "Fast, slow, but always moving\n"
-               "All around the world",
+               "All around the world\n",
             3: "Dangerous and wild\n"
                "Destroys all things in its wake\n"
-               "Can't be tamed and harsh"
+               "Can't be tamed and harsh\n"
         }
         random_num = random.randint(1, 3)
         print(random_haikus[random_num])
+
+    def print_documentation(self):
+        with open("documentation.txt", "r") as f:
+            print(f.read())
 
 
 if __name__ == "__main__":
