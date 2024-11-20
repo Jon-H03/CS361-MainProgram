@@ -1,7 +1,11 @@
 import time
 import random
+import requests
 
-documentation = ""
+HAIKU_API_URL = "http://127.0.0.1:5001/generate-haiku"
+DATETIME_API_URL = "http://127.0.0.1:5002/datetime"
+VALIDATOR_API_URL = "http://127.0.0.1:5003/validate-haiku"
+
 
 class MainProgram:
 
@@ -18,16 +22,15 @@ class MainProgram:
     # added, users should expect the same level of freedom without worrying about breaking the app.
     def get_answer(self):
         print("1. Generate new haiku")
-        print("2. View past haikus")
-        print("3. Documentation & Usage") # IH1, IH2,
-        print("4. Exit")
+        print("2. Documentation & Usage")  # IH1, IH2,
+        print("3. Exit")
         answer = input("Please enter the corresponding number.\n")
 
         return answer
 
     def fulfill_answer(self):
         answer = self.get_answer()
-        print("Please wait. One command at a time.\n")
+        print("Please wait.\n")
         time.sleep(1)
         while True:
             if answer == "1":
@@ -39,13 +42,10 @@ class MainProgram:
                 self.haiku(input_or_rand)
                 break
             elif answer == "2":
-                # Show past haikus
-                pass
-            elif answer == "3":
                 # Show documentation (IH #...)
                 self.print_documentation()
                 return 0
-            elif answer == "4":
+            elif answer == "3":
                 # Exit haiku bot
                 print("Thank you for using Haiku Bot! Session will now be closed.\n")
                 return 1
@@ -54,11 +54,35 @@ class MainProgram:
                 answer = input("Please enter the corresponding number.\n")
 
     def haiku(self, user_input):
+        #  For user generated Haiku
         if user_input == "1":
-            pass
+            topic = input("What would you like your Haiku to be about?\n")
+
+            # Build payload for API
+            payload = {
+                "topic": topic
+            }
+
+            try:
+                response = requests.post(HAIKU_API_URL, json=payload)
+                response.raise_for_status()
+
+                data = response.json()
+                haiku = data.get("haiku")
+
+                is_valid = self.validate_haiku(haiku)
+
+                print(f"Haiku about {topic}\n\n", haiku, "\n")
+                self.get_datetime()
+                if is_valid:
+                    print("Haiku was validated as 5-7-5 syllables.\n")
+                else:
+                    print("Haiku was invalidated as 5-7-5 syllables.\n")
+            except requests.exceptions.RequestException as e:
+                print("Error:", e)
+
         if user_input == "2":
-            output = self.generate_random_haiku()
-            return output
+            self.generate_random_haiku()
 
     def generate_random_haiku(self):
         random_haikus = {
@@ -74,6 +98,29 @@ class MainProgram:
         }
         random_num = random.randint(1, 3)
         print(random_haikus[random_num])
+
+    def get_datetime(self):
+        try:
+            response = requests.get(DATETIME_API_URL)
+            response.raise_for_status()
+            data = response.json()
+            print(data["date_time"], "\n")
+        except requests.exceptions.RequestException as e:
+            print("Error:", e)
+
+    def validate_haiku(self, haiku):
+        try:
+            response = requests.post(VALIDATOR_API_URL, json={"haiku": haiku})
+            data = response.json()
+            status = data.get("valid")
+
+            if status:
+                return True
+            else:
+                return False
+        except requests.exceptions.RequestException as e:
+            print("Error:", e)
+
 
     def print_documentation(self):
         with open("documentation.txt", "r") as f:
